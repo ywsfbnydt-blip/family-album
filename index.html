@@ -1,416 +1,152 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE HTML>
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ذاكرتنا | Our Memory</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/tabler-icons.min.css">
+<title>ألبوم العائلة</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --c1:#7F77DD;--c2:#1D9E75;--c3:#D85A30;--c4:#378ADD;
-  --bg:#0f0f1a;--bg2:#1a1a2e;--bg3:#16213e;
-  --text:#eee;--text2:#aaa;--card:#1e1e35;
-  --radius:14px;
-}
-body{background:var(--bg);color:var(--text);font-family:Arial,sans-serif;min-height:100vh;}
-header{
-  background:linear-gradient(135deg,#1a1a3e,#0f0f1a);
-  padding:24px 20px 16px;
-  border-bottom:1px solid rgba(127,119,221,0.3);
-}
-.header-top{display:flex;align-items:center;justify-content:space-between;}
-.logo{display:flex;align-items:center;gap:10px;}
-.logo-icon{
-  width:42px;height:42px;border-radius:12px;
-  background:linear-gradient(135deg,var(--c1),var(--c4));
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;
-}
-.logo-text h1{font-size:18px;font-weight:700;color:#fff;}
-.logo-text p{font-size:11px;color:var(--text2);}
-.header-stats{display:flex;gap:16px;}
-.stat{text-align:center;}
-.stat-num{font-size:18px;font-weight:700;color:var(--c1);}
-.stat-label{font-size:10px;color:var(--text2);}
-nav{
-  display:flex;overflow-x:auto;gap:8px;
-  padding:12px 20px;
-  scrollbar-width:none;
-}
-nav::-webkit-scrollbar{display:none;}
-.tab{
-  display:flex;align-items:center;gap:6px;
-  padding:8px 16px;border-radius:30px;
-  border:1px solid rgba(255,255,255,0.1);
-  background:transparent;color:var(--text2);
-  font-size:13px;cursor:pointer;white-space:nowrap;
-  transition:all 0.2s;
-}
-.tab.active{background:var(--c1);color:#fff;border-color:var(--c1);}
-.tab i{font-size:16px;}
-.section{display:none;padding:16px 20px;}
-.section.active{display:block;}
-.upload-card{
-  background:var(--card);border-radius:var(--radius);
-  border:2px dashed rgba(127,119,221,0.4);
-  padding:20px;text-align:center;margin-bottom:20px;
-  transition:border-color 0.2s;
-}
-.upload-card:hover{border-color:var(--c1);}
-.upload-icon{font-size:40px;color:var(--c1);margin-bottom:8px;}
-.upload-card h3{font-size:15px;margin-bottom:6px;}
-.upload-card p{font-size:12px;color:var(--text2);margin-bottom:14px;}
-.upload-btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
-input[type=file]{display:none;}
-.btn{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:9px 18px;border-radius:8px;border:none;
-  font-size:13px;cursor:pointer;transition:all 0.2s;
-}
-.btn-primary{background:var(--c1);color:#fff;}
-.btn-primary:hover{background:#6b63c5;}
-.btn-success{background:var(--c2);color:#fff;}
-.btn-success:hover{background:#158c65;}
-.btn-outline{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.2);}
-.btn-outline:hover{background:rgba(255,255,255,0.05);}
-.btn i{font-size:16px;}
-.status-bar{
-  padding:8px 12px;border-radius:8px;
-  font-size:12px;text-align:center;
-  margin-bottom:16px;min-height:34px;
-  display:flex;align-items:center;justify-content:center;
-  gap:6px;
-}
-.status-bar.success{background:rgba(29,158,117,0.15);color:#1D9E75;}
-.status-bar.error{background:rgba(216,90,48,0.15);color:#D85A30;}
-.status-bar.loading{background:rgba(127,119,221,0.15);color:var(--c1);}
-.status-bar.hidden{display:none;}
-.section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.section-title h2{font-size:15px;font-weight:600;}
-.section-title span{font-size:12px;color:var(--text2);}
-.photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.photo-item{border-radius:10px;overflow:hidden;position:relative;aspect-ratio:1;background:var(--card);cursor:pointer;}
-.photo-item img{width:100%;height:100%;object-fit:cover;display:block;}
-.photo-overlay{
-  position:absolute;bottom:0;left:0;right:0;
-  background:linear-gradient(transparent,rgba(0,0,0,0.7));
-  padding:20px 8px 8px;opacity:0;transition:opacity 0.2s;
-  display:flex;gap:6px;justify-content:flex-end;
-}
-.photo-item:hover .photo-overlay{opacity:1;}
-.icon-btn{
-  width:28px;height:28px;border-radius:6px;
-  background:rgba(255,255,255,0.15);
-  display:flex;align-items:center;justify-content:center;
-  border:none;color:#fff;cursor:pointer;font-size:14px;
-}
-.music-list{display:flex;flex-direction:column;gap:10px;}
-.music-item{background:var(--card);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
-.music-thumb{
-  width:46px;height:46px;border-radius:10px;
-  background:linear-gradient(135deg,var(--c1),var(--c4));
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;flex-shrink:0;color:#fff;
-}
-.music-info{flex:1;min-width:0;}
-.music-info h4{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.music-info p{font-size:11px;color:var(--text2);}
-.music-actions{display:flex;gap:6px;}
-.music-btn{
-  width:32px;height:32px;border-radius:8px;
-  background:rgba(127,119,221,0.15);
-  display:flex;align-items:center;justify-content:center;
-  border:none;color:var(--c1);cursor:pointer;font-size:16px;
-}
-.file-list{display:flex;flex-direction:column;gap:8px;}
-.file-item{background:var(--card);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
-.file-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.file-icon.pdf{background:rgba(216,90,48,0.15);color:#D85A30;}
-.file-icon.doc{background:rgba(55,138,221,0.15);color:#378ADD;}
-.file-icon.other{background:rgba(127,119,221,0.15);color:var(--c1);}
-.file-info{flex:1;min-width:0;}
-.file-info h4{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.file-info p{font-size:11px;color:var(--text2);}
-.file-actions{display:flex;gap:6px;}
-.file-btn{
-  width:30px;height:30px;border-radius:7px;
-  background:rgba(255,255,255,0.05);
-  display:flex;align-items:center;justify-content:center;
-  border:1px solid rgba(255,255,255,0.1);
-  color:var(--text2);cursor:pointer;font-size:15px;
-}
-.video-grid{display:flex;flex-direction:column;gap:12px;}
-.video-item{background:var(--card);border-radius:12px;overflow:hidden;}
-.video-thumb{
-  width:100%;aspect-ratio:16/9;
-  background:linear-gradient(135deg,#1a1a3e,#0f1930);
-  display:flex;align-items:center;justify-content:center;position:relative;
-}
-.play-btn{
-  width:52px;height:52px;border-radius:50%;
-  background:rgba(127,119,221,0.8);
-  display:flex;align-items:center;justify-content:center;
-  font-size:24px;color:#fff;cursor:pointer;border:none;
-}
-.video-info{padding:10px 14px 12px;}
-.video-info h4{font-size:14px;font-weight:600;margin-bottom:4px;}
-.video-meta{display:flex;align-items:center;justify-content:space-between;}
-.video-meta span{font-size:11px;color:var(--text2);}
-.video-actions{display:flex;gap:6px;}
-.empty-state{text-align:center;padding:40px 20px;color:var(--text2);}
-.empty-state i{font-size:48px;opacity:0.3;margin-bottom:12px;}
-.empty-state p{font-size:14px;}
-.progress-bar{height:3px;border-radius:2px;background:rgba(255,255,255,0.1);margin-top:10px;overflow:hidden;}
-.progress-fill{height:100%;background:var(--c1);width:0%;transition:width 0.3s;}
+#upload-btn{position:fixed;bottom:30px;right:30px;z-index:9999;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.4);color:#fff;font-size:1rem;padding:14px 22px;border-radius:50px;cursor:pointer;backdrop-filter:blur(10px);transition:all 0.3s ease;display:flex;align-items:center;gap:8px;font-family:inherit}
+#upload-btn:hover{background:rgba(255,255,255,0.28);border-color:rgba(255,255,255,0.7);transform:translateY(-2px)}
+#upload-modal{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);align-items:center;justify-content:center}
+#upload-modal.active{display:flex}
+#upload-box{background:#1a1f2c;border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:36px;width:90%;max-width:440px;text-align:center;color:#fff;position:relative}
+#upload-box h3{margin:0 0 8px;font-size:1.4rem}
+#upload-box p{margin:0 0 24px;opacity:0.6;font-size:0.9rem}
+#drop-zone{border:2px dashed rgba(255,255,255,0.25);border-radius:12px;padding:36px 20px;cursor:pointer;transition:all 0.3s;margin-bottom:20px}
+#drop-zone:hover{border-color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.05)}
+#file-input{display:none}
+#upload-progress{display:none;background:rgba(255,255,255,0.08);border-radius:8px;height:6px;margin-bottom:16px;overflow:hidden}
+#progress-bar{height:100%;background:linear-gradient(90deg,#4fc3f7,#81d4fa);border-radius:8px;width:0%;transition:width 0.3s ease}
+#upload-status{font-size:0.85rem;opacity:0.7;margin-bottom:20px;min-height:20px}
+.modal-close{position:absolute;top:14px;right:18px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;line-height:1;transition:color 0.2s}
+.modal-close:hover{color:#fff}
+#gallery-loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:100;color:rgba(255,255,255,0.4);font-size:0.9rem;pointer-events:none}
+#gallery-loading.hidden{display:none}
+#empty-state{display:none;position:fixed;inset:0;align-items:center;justify-content:center;flex-direction:column;color:rgba(255,255,255,0.35);text-align:center;gap:12px}
+#empty-state.active{display:flex}
+#empty-state i{font-size:3rem;opacity:0.3}
+#empty-state p{margin:0;font-size:1rem}
 </style>
 </head>
-<body>
-<header>
-  <div class="header-top">
-    <div class="logo">
-      <div class="logo-icon"><i class="ti ti-heart" style="color:#fff;font-size:20px;"></i></div>
-      <div class="logo-text">
-        <h1>ذاكرتنا</h1>
-        <p>Our Memory</p>
-      </div>
-    </div>
-    <div class="header-stats">
-      <div class="stat"><div class="stat-num" id="photo-count">0</div><div class="stat-label">صور</div></div>
-      <div class="stat"><div class="stat-num" id="music-count">0</div><div class="stat-label">موسيقى</div></div>
-      <div class="stat"><div class="stat-num" id="file-count">0</div><div class="stat-label">ملفات</div></div>
-    </div>
-  </div>
-</header>
-<nav>
-  <button class="tab active" onclick="switchTab('photos',this)"><i class="ti ti-photo"></i> الصور</button>
-  <button class="tab" onclick="switchTab('music',this)"><i class="ti ti-music"></i> الموسيقى</button>
-  <button class="tab" onclick="switchTab('files',this)"><i class="ti ti-files"></i> الملفات</button>
-  <button class="tab" onclick="switchTab('videos',this)"><i class="ti ti-movie"></i> الفيديو</button>
-</nav>
-<div id="section-photos" class="section active">
-  <div class="upload-card">
-    <div class="upload-icon"><i class="ti ti-camera-plus"></i></div>
-    <h3>أضف صوراً جديدة</h3>
-    <p>شارك ذكرياتك مع العائلة</p>
-    <div class="upload-btn-row">
-      <label class="btn btn-primary" for="photo-input"><i class="ti ti-upload"></i> رفع صورة</label>
-      <input type="file" id="photo-input" accept="image/*" multiple onchange="uploadPhoto(this)">
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="photo-progress"></div></div>
-  </div>
-  <div id="photo-status" class="status-bar hidden"></div>
-  <div class="section-title">
-    <h2><i class="ti ti-photo" style="color:var(--c1);margin-left:6px;"></i> معرض الصور</h2>
-    <span id="photo-total">0 صورة</span>
-  </div>
-  <div class="photo-grid" id="photo-grid">
-    <div class="empty-state" style="grid-column:1/-1;">
-      <i class="ti ti-photo-off"></i>
-      <p>لا توجد صور بعد<br>ارفع أول صورة لك</p>
-    </div>
-  </div>
+<body class="is-preload">
+<div id="wrapper">
+<section id="main">
+<div id="gallery-loading">جاري تحميل الصور...</div>
+<div id="empty-state">
+<i class="fas fa-images"></i>
+<p>لا توجد صور بعد — ارفع أول صورة!</p>
 </div>
-<div id="section-music" class="section">
-  <div class="upload-card">
-    <div class="upload-icon" style="color:var(--c2);"><i class="ti ti-music-plus"></i></div>
-    <h3>أضف موسيقى</h3>
-    <p>شارك أغانيك المفضلة مع العائلة</p>
-    <div class="upload-btn-row">
-      <label class="btn btn-success" for="music-input"><i class="ti ti-upload"></i> رفع ملف صوتي</label>
-      <input type="file" id="music-input" accept="audio/*" multiple onchange="uploadMusic(this)">
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="music-progress" style="background:var(--c2);"></div></div>
-  </div>
-  <div id="music-status" class="status-bar hidden"></div>
-  <div class="section-title">
-    <h2><i class="ti ti-playlist" style="color:var(--c2);margin-left:6px;"></i> قائمة التشغيل</h2>
-    <span id="music-total">0 مقطع</span>
-  </div>
-  <div class="music-list" id="music-list">
-    <div class="empty-state"><i class="ti ti-music-off"></i><p>لا توجد موسيقى بعد</p></div>
-  </div>
+<div class="items" id="gallery-container">
+<div class="item intro span-2">
+<h1>ألبوم العائلة</h1>
+<p>ذكرياتنا الجميلة</p>
 </div>
-<div id="section-files" class="section">
-  <div class="upload-card">
-    <div class="upload-icon" style="color:var(--c4);"><i class="ti ti-file-plus"></i></div>
-    <h3>أضف ملفات</h3>
-    <p>احفظ الوثائق المهمة للعائلة</p>
-    <div class="upload-btn-row">
-      <label class="btn" style="background:var(--c4);color:#fff;" for="file-input"><i class="ti ti-upload"></i> رفع ملف</label>
-      <input type="file" id="file-input" multiple onchange="uploadFile(this)">
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="file-progress" style="background:var(--c4);"></div></div>
-  </div>
-  <div id="file-status" class="status-bar hidden"></div>
-  <div class="section-title">
-    <h2><i class="ti ti-folder" style="color:var(--c4);margin-left:6px;"></i> الملفات المحفوظة</h2>
-    <span id="file-total">0 ملف</span>
-  </div>
-  <div class="file-list" id="file-list">
-    <div class="empty-state"><i class="ti ti-folder-off"></i><p>لا توجد ملفات بعد</p></div>
-  </div>
 </div>
-<div id="section-videos" class="section">
-  <div class="upload-card">
-    <div class="upload-icon" style="color:var(--c3);"><i class="ti ti-video-plus"></i></div>
-    <h3>أضف مقاطع فيديو</h3>
-    <p>احتفظ بلحظاتكم الجميلة</p>
-    <div class="upload-btn-row">
-      <label class="btn" style="background:var(--c3);color:#fff;" for="video-input"><i class="ti ti-upload"></i> رفع فيديو</label>
-      <input type="file" id="video-input" accept="video/*" multiple onchange="uploadVideo(this)">
-    </div>
-    <div class="progress-bar"><div class="progress-fill" id="video-progress" style="background:var(--c3);"></div></div>
-  </div>
-  <div id="video-status" class="status-bar hidden"></div>
-  <div class="section-title">
-    <h2><i class="ti ti-movie" style="color:var(--c3);margin-left:6px;"></i> مقاطع الفيديو</h2>
-    <span id="video-total">0 مقطع</span>
-  </div>
-  <div class="video-grid" id="video-grid">
-    <div class="empty-state"><i class="ti ti-video-off"></i><p>لا توجد مقاطع فيديو بعد</p></div>
-  </div>
+</section>
+<section id="footer">
+<section><p>ألبوم صور العائلة</p></section>
+<section><ul class="copyright"><li>&copy; ألبوم العائلة 2024</li></ul></section>
+</section>
 </div>
+<button id="upload-btn">+ رفع صورة</button>
+<div id="upload-modal">
+<div id="upload-box">
+<button class="modal-close" onclick="closeModal()">&times;</button>
+<h3>رفع صورة جديدة</h3>
+<p>اختر صورة من هاتفك</p>
+<div id="drop-zone" onclick="document.getElementById('file-input').click()">
+<p style="font-size:2rem;opacity:0.4">📷</p>
+<span style="opacity:0.5;font-size:0.9rem">اضغط هنا لاختيار صورة</span>
+</div>
+<input type="file" id="file-input" accept="image/*" multiple />
+<div id="upload-progress"><div id="progress-bar"></div></div>
+<div id="upload-status"></div>
+</div>
+</div>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.poptrox.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
 <script>
-const CLOUD='dzlclwscb',PRESET='family_album';
-function switchTab(name,el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('section-'+name).classList.add('active');
+const CLOUD_NAME='dzlclwscb';
+const UPLOAD_PRESET='family_upload';
+const FOLDER='family-album';
+async function loadGallery(){
+const loading=document.getElementById('gallery-loading');
+const emptyState=document.getElementById('empty-state');
+const container=document.getElementById('gallery-container');
+loading.classList.remove('hidden');
+try{
+const res=await fetch('https://res.cloudinary.com/'+CLOUD_NAME+'/image/list/'+FOLDER+'.json');
+if(!res.ok)throw new Error('error');
+const data=await res.json();
+const resources=data.resources||[];
+loading.classList.add('hidden');
+if(resources.length===0){emptyState.classList.add('active');return;}
+emptyState.classList.remove('active');
+renderGallery(resources);
+}catch(err){
+loading.classList.add('hidden');
+emptyState.classList.add('active');
+}}
+const spans=['span-1','span-2','span-3','span-1','span-2','span-1','span-2','span-3'];
+function renderGallery(resources){
+const container=document.getElementById('gallery-container');
+container.querySelectorAll('.item.thumb').forEach(el=>el.remove());
+resources.forEach((img,index)=>{
+const pid=img.public_id;
+const span=spans[index%spans.length];
+const thumb='https://res.cloudinary.com/'+CLOUD_NAME+'/image/upload/c_fill,w_400,h_300,q_auto,f_auto/'+pid;
+const full='https://res.cloudinary.com/'+CLOUD_NAME+'/image/upload/q_auto,f_auto/'+pid;
+const name=pid.split('/').pop().replace(/[-_]/g,' ');
+const article=document.createElement('article');
+article.className='item thumb '+span;
+article.innerHTML='<h2>'+name+'</h2><a href="'+full+'" class="image"><img src="'+thumb+'" alt="'+name+'" loading="lazy"></a>';
+container.appendChild(article);
+});
+$('#main').poptrox({
+onPopupOpen:function(){$('body').addClass('is-poptrox-visible');},
+onPopupClose:function(){$('body').removeClass('is-poptrox-visible');},
+overlayColor:'#1a1f2c',overlayOpacity:0.85,popupCloserText:'',popupLoaderText:'',
+selector:'.item.thumb a.image',caption:function($a){return $a.prev('h2').html();},
+usePopupDefaultStyling:false,usePopupCloser:false,usePopupCaption:true,usePopupNav:true,windowMargin:50
+});
 }
-function showStatus(id,msg,type){
-  const el=document.getElementById(id+'-status');
-  el.className='status-bar '+type;
-  el.innerHTML=msg;
-  if(type==='success')setTimeout(()=>el.className='status-bar hidden',3000);
+async function uploadFiles(files){
+const progress=document.getElementById('upload-progress');
+const bar=document.getElementById('progress-bar');
+const status=document.getElementById('upload-status');
+progress.style.display='block';
+let uploaded=0;
+for(const file of files){
+status.textContent='جاري رفع '+file.name+'...';
+const formData=new FormData();
+formData.append('file',file);
+formData.append('upload_preset',UPLOAD_PRESET);
+formData.append('folder',FOLDER);
+try{
+const res=await fetch('https://api.cloudinary.com/v1_1/'+CLOUD_NAME+'/image/upload',{method:'POST',body:formData});
+if(!res.ok)throw new Error('error');
+uploaded++;
+bar.style.width=(uploaded/files.length*100)+'%';
+status.textContent='تم رفع '+uploaded+' من '+files.length;
+}catch(err){status.textContent='خطأ في الرفع';}
 }
-function setProgress(id,pct){document.getElementById(id+'-progress').style.width=pct+'%';}
-async function uploadToCloud(file,tag){
-  const fd=new FormData();
-  fd.append('file',file);fd.append('upload_preset',PRESET);fd.append('tags',tag);
-  const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/auto/upload`,{method:'POST',body:fd});
-  return await r.json();
-}
-async function uploadPhoto(input){
-  const files=[...input.files];if(!files.length)return;
-  showStatus('photo','<i class="ti ti-loader"></i> جارٍ الرفع...','loading');setProgress('photo',10);
-  for(let i=0;i<files.length;i++){
-    try{const data=await uploadToCloud(files[i],'family_photo');setProgress('photo',Math.round((i+1)/files.length*100));if(data.secure_url)addPhotoToGrid(data.secure_url,data.public_id);}
-    catch(e){showStatus('photo','<i class="ti ti-x"></i> خطأ في الرفع','error');}
-  }
-  showStatus('photo','<i class="ti ti-check"></i> تم الرفع بنجاح','success');input.value='';setProgress('photo',0);updateCounts();
-}
-async function uploadMusic(input){
-  const files=[...input.files];if(!files.length)return;
-  showStatus('music','<i class="ti ti-loader"></i> جارٍ الرفع...','loading');setProgress('music',10);
-  for(let i=0;i<files.length;i++){
-    try{const data=await uploadToCloud(files[i],'family_music');setProgress('music',Math.round((i+1)/files.length*100));if(data.secure_url)addMusicToList(data.secure_url,files[i].name,data.public_id);}
-    catch(e){showStatus('music','<i class="ti ti-x"></i> خطأ في الرفع','error');}
-  }
-  showStatus('music','<i class="ti ti-check"></i> تم الرفع بنجاح','success');input.value='';setProgress('music',0);updateCounts();
-}
-async function uploadFile(input){
-  const files=[...input.files];if(!files.length)return;
-  showStatus('file','<i class="ti ti-loader"></i> جارٍ الرفع...','loading');setProgress('file',10);
-  for(let i=0;i<files.length;i++){
-    try{const data=await uploadToCloud(files[i],'family_file');setProgress('file',Math.round((i+1)/files.length*100));if(data.secure_url)addFileToList(data.secure_url,files[i].name,files[i].size,data.public_id);}
-    catch(e){showStatus('file','<i class="ti ti-x"></i> خطأ في الرفع','error');}
-  }
-  showStatus('file','<i class="ti ti-check"></i> تم الرفع بنجاح','success');input.value='';setProgress('file',0);updateCounts();
-}
-async function uploadVideo(input){
-  const files=[...input.files];if(!files.length)return;
-  showStatus('video','<i class="ti ti-loader"></i> جارٍ الرفع... قد يستغرق وقتاً','loading');setProgress('video',10);
-  for(let i=0;i<files.length;i++){
-    try{const data=await uploadToCloud(files[i],'family_video');setProgress('video',Math.round((i+1)/files.length*100));if(data.secure_url)addVideoToGrid(data.secure_url,files[i].name,data.public_id);}
-    catch(e){showStatus('video','<i class="ti ti-x"></i> خطأ في الرفع','error');}
-  }
-  showStatus('video','<i class="ti ti-check"></i> تم الرفع بنجاح','success');input.value='';setProgress('video',0);updateCounts();
-}
-function addPhotoToGrid(url,id){
-  const grid=document.getElementById('photo-grid');
-  const empty=grid.querySelector('.empty-state');if(empty)empty.remove();
-  const div=document.createElement('div');div.className='photo-item';
-  div.innerHTML=`<img src="${url}" loading="lazy" alt="صورة عائلية"><div class="photo-overlay"><button class="icon-btn" onclick="window.open('${url}')"><i class="ti ti-eye"></i></button><button class="icon-btn" onclick="downloadFile('${url}','photo.jpg')"><i class="ti ti-download"></i></button></div>`;
-  grid.appendChild(div);
-}
-function addMusicToList(url,name,id){
-  const list=document.getElementById('music-list');
-  const empty=list.querySelector('.empty-state');if(empty)empty.remove();
-  const div=document.createElement('div');div.className='music-item';
-  const shortName=name.length>25?name.substring(0,25)+'...':name;
-  div.innerHTML=`<div class="music-thumb"><i class="ti ti-music"></i></div><div class="music-info"><h4>${shortName}</h4><p>ملف صوتي</p></div><div class="music-actions"><button class="music-btn" onclick="playAudio('${url}',this)"><i class="ti ti-player-play"></i></button><button class="music-btn" onclick="downloadFile('${url}','${name}')" style="background:rgba(29,158,117,0.15);color:var(--c2);"><i class="ti ti-download"></i></button></div>`;
-  list.appendChild(div);
-}
-function addFileToList(url,name,size,id){
-  const list=document.getElementById('file-list');
-  const empty=list.querySelector('.empty-state');if(empty)empty.remove();
-  const ext=name.split('.').pop().toLowerCase();
-  const iconClass=ext==='pdf'?'pdf':ext==='doc'||ext==='docx'?'doc':'other';
-  const iconName=ext==='pdf'?'ti-file-type-pdf':ext==='doc'||ext==='docx'?'ti-file-type-doc':'ti-file';
-  const sizeStr=size>1048576?(size/1048576).toFixed(1)+' MB':(size/1024).toFixed(0)+' KB';
-  const shortName=name.length>28?name.substring(0,28)+'...':name;
-  const div=document.createElement('div');div.className='file-item';
-  div.innerHTML=`<div class="file-icon ${iconClass}"><i class="ti ${iconName}"></i></div><div class="file-info"><h4>${shortName}</h4><p>${sizeStr} · ${ext.toUpperCase()}</p></div><div class="file-actions"><button class="file-btn" onclick="window.open('${url}')"><i class="ti ti-eye"></i></button><button class="file-btn" onclick="downloadFile('${url}','${name}')"><i class="ti ti-download"></i></button></div>`;
-  list.appendChild(div);
-}
-function addVideoToGrid(url,name,id){
-  const grid=document.getElementById('video-grid');
-  const empty=grid.querySelector('.empty-state');if(empty)empty.remove();
-  const shortName=name.length>30?name.substring(0,30)+'...':name;
-  const div=document.createElement('div');div.className='video-item';
-  div.innerHTML=`<div class="video-thumb"><button class="play-btn" onclick="playVideo('${url}',this)"><i class="ti ti-player-play"></i></button></div><div class="video-info"><h4>${shortName}</h4><div class="video-meta"><span>مقطع فيديو</span><div class="video-actions"><button class="file-btn" onclick="downloadFile('${url}','${name}')"><i class="ti ti-download"></i></button></div></div></div>`;
-  grid.appendChild(div);
-}
-let currentAudio=null;
-function playAudio(url,btn){
-  if(currentAudio){currentAudio.pause();currentAudio=null;}
-  const audio=new Audio(url);currentAudio=audio;audio.play();
-  btn.innerHTML='<i class="ti ti-player-pause"></i>';
-  audio.onended=()=>{btn.innerHTML='<i class="ti ti-player-play"></i>';currentAudio=null;};
-  btn.onclick=()=>{audio.pause();btn.innerHTML='<i class="ti ti-player-play"></i>';currentAudio=null;btn.onclick=()=>playAudio(url,btn);};
-}
-function playVideo(url,btn){
-  const thumb=btn.parentElement;
-  const video=document.createElement('video');
-  video.src=url;video.controls=true;video.autoplay=true;
-  video.style.cssText='width:100%;height:100%;object-fit:contain;background:#000;';
-  thumb.innerHTML='';thumb.appendChild(video);
-}
-function downloadFile(url,name){const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';a.click();}
-function updateCounts(){
-  const pc=document.querySelectorAll('.photo-item').length;
-  const mc=document.querySelectorAll('.music-item').length;
-  const fc=document.querySelectorAll('.file-item').length;
-  const vc=document.querySelectorAll('.video-item').length;
-  document.getElementById('photo-count').textContent=pc;
-  document.getElementById('music-count').textContent=mc;
-  document.getElementById('file-count').textContent=fc;
-  document.getElementById('photo-total').textContent=pc+' صورة';
-  document.getElementById('music-total').textContent=mc+' مقطع';
-  document.getElementById('file-total').textContent=fc+' ملف';
-  document.getElementById('video-total').textContent=vc+' مقطع';
-}
-function loadExisting(){
-  const saved = localStorage.getItem('family_media');
-  if(!saved)return;
-  const media = JSON.parse(saved);
-  media.forEach(item=>{
-    if(item.type==='photo')addPhotoToGrid(item.url,item.id);
-    else if(item.type==='music')addMusicToList(item.url,item.name,item.id);
-    else if(item.type==='file')addFileToList(item.url,item.name,item.size,item.id);
-    else if(item.type==='video')addVideoToGrid(item.url,item.name,item.id);
-  });
-  updateCounts();
-}
-function saveMedia(type,url,name,size,id){
-  const saved = localStorage.getItem('family_media');
-  const media = saved ? JSON.parse(saved) : [];
-  media.push({type,url,name:name||'',size:size||0,id});
-  localStorage.setItem('family_media', JSON.stringify(media));
-}
-window.onload=loadExisting;
+if(uploaded===files.length){
+status.textContent='✅ تم الرفع! جاري التحديث...';
+setTimeout(()=>{closeModal();progress.style.display='none';bar.style.width='0%';loadGallery();},1500);
+}}
+function openModal(){document.getElementById('upload-modal').classList.add('active');}
+function closeModal(){document.getElementById('upload-modal').classList.remove('active');document.getElementById('upload-status').textContent='';document.getElementById('progress-bar').style.width='0%';document.getElementById('upload-progress').style.display='none';}
+document.getElementById('upload-btn').addEventListener('click',openModal);
+document.getElementById('upload-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('file-input').addEventListener('change',function(){if(this.files.length>0)uploadFiles(Array.from(this.files));});
+window.addEventListener('load',loadGallery);
 </script>
 </body>
 </html>
