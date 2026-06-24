@@ -1,152 +1,190 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>ألبوم العائلة</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel="stylesheet" href="assets/css/main.css" />
-<link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
-<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-<style>
-#upload-btn{position:fixed;bottom:30px;right:30px;z-index:9999;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.4);color:#fff;font-size:1rem;padding:14px 22px;border-radius:50px;cursor:pointer;backdrop-filter:blur(10px);transition:all 0.3s ease;display:flex;align-items:center;gap:8px;font-family:inherit}
-#upload-btn:hover{background:rgba(255,255,255,0.28);border-color:rgba(255,255,255,0.7);transform:translateY(-2px)}
-#upload-modal{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);align-items:center;justify-content:center}
-#upload-modal.active{display:flex}
-#upload-box{background:#1a1f2c;border:1px solid rgba(255,255,255,0.15);border-radius:16px;padding:36px;width:90%;max-width:440px;text-align:center;color:#fff;position:relative}
-#upload-box h3{margin:0 0 8px;font-size:1.4rem}
-#upload-box p{margin:0 0 24px;opacity:0.6;font-size:0.9rem}
-#drop-zone{border:2px dashed rgba(255,255,255,0.25);border-radius:12px;padding:36px 20px;cursor:pointer;transition:all 0.3s;margin-bottom:20px}
-#drop-zone:hover{border-color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.05)}
-#file-input{display:none}
-#upload-progress{display:none;background:rgba(255,255,255,0.08);border-radius:8px;height:6px;margin-bottom:16px;overflow:hidden}
-#progress-bar{height:100%;background:linear-gradient(90deg,#4fc3f7,#81d4fa);border-radius:8px;width:0%;transition:width 0.3s ease}
-#upload-status{font-size:0.85rem;opacity:0.7;margin-bottom:20px;min-height:20px}
-.modal-close{position:absolute;top:14px;right:18px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;line-height:1;transition:color 0.2s}
-.modal-close:hover{color:#fff}
-#gallery-loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:100;color:rgba(255,255,255,0.4);font-size:0.9rem;pointer-events:none}
-#gallery-loading.hidden{display:none}
-#empty-state{display:none;position:fixed;inset:0;align-items:center;justify-content:center;flex-direction:column;color:rgba(255,255,255,0.35);text-align:center;gap:12px}
-#empty-state.active{display:flex}
-#empty-state i{font-size:3rem;opacity:0.3}
-#empty-state p{margin:0;font-size:1rem}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ذاكرتنا - معرض عائلي | Our Memory - Family Gallery</title>
+    <link rel="stylesheet" href="templatemo-amber-folio.css">
+    <link rel="stylesheet" href="custom-media.css">
 </head>
-<body class="is-preload">
-<div id="wrapper">
-<section id="main">
-<div id="gallery-loading">جاري تحميل الصور...</div>
-<div id="empty-state">
-<i class="fas fa-images"></i>
-<p>لا توجد صور بعد — ارفع أول صورة!</p>
-</div>
-<div class="items" id="gallery-container">
-<div class="item intro span-2">
-<h1>ألبوم العائلة</h1>
-<p>ذكرياتنا الجميلة</p>
-</div>
-</div>
-</section>
-<section id="footer">
-<section><p>ألبوم صور العائلة</p></section>
-<section><ul class="copyright"><li>&copy; ألبوم العائلة 2024</li></ul></section>
-</section>
-</div>
-<button id="upload-btn">+ رفع صورة</button>
-<div id="upload-modal">
-<div id="upload-box">
-<button class="modal-close" onclick="closeModal()">&times;</button>
-<h3>رفع صورة جديدة</h3>
-<p>اختر صورة من هاتفك</p>
-<div id="drop-zone" onclick="document.getElementById('file-input').click()">
-<p style="font-size:2rem;opacity:0.4">📷</p>
-<span style="opacity:0.5;font-size:0.9rem">اضغط هنا لاختيار صورة</span>
-</div>
-<input type="file" id="file-input" accept="image/*" multiple />
-<div id="upload-progress"><div id="progress-bar"></div></div>
-<div id="upload-status"></div>
-</div>
-</div>
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/jquery.poptrox.min.js"></script>
-<script src="assets/js/browser.min.js"></script>
-<script src="assets/js/breakpoints.min.js"></script>
-<script src="assets/js/util.js"></script>
-<script src="assets/js/main.js"></script>
-<script>
-const CLOUD_NAME='dzlclwscb';
-const UPLOAD_PRESET='family_upload';
-const FOLDER='family-album';
-async function loadGallery(){
-const loading=document.getElementById('gallery-loading');
-const emptyState=document.getElementById('empty-state');
-const container=document.getElementById('gallery-container');
-loading.classList.remove('hidden');
-try{
-const res=await fetch('https://res.cloudinary.com/'+CLOUD_NAME+'/image/list/'+FOLDER+'.json');
-if(!res.ok)throw new Error('error');
-const data=await res.json();
-const resources=data.resources||[];
-loading.classList.add('hidden');
-if(resources.length===0){emptyState.classList.add('active');return;}
-emptyState.classList.remove('active');
-renderGallery(resources);
-}catch(err){
-loading.classList.add('hidden');
-emptyState.classList.add('active');
-}}
-const spans=['span-1','span-2','span-3','span-1','span-2','span-1','span-2','span-3'];
-function renderGallery(resources){
-const container=document.getElementById('gallery-container');
-container.querySelectorAll('.item.thumb').forEach(el=>el.remove());
-resources.forEach((img,index)=>{
-const pid=img.public_id;
-const span=spans[index%spans.length];
-const thumb='https://res.cloudinary.com/'+CLOUD_NAME+'/image/upload/c_fill,w_400,h_300,q_auto,f_auto/'+pid;
-const full='https://res.cloudinary.com/'+CLOUD_NAME+'/image/upload/q_auto,f_auto/'+pid;
-const name=pid.split('/').pop().replace(/[-_]/g,' ');
-const article=document.createElement('article');
-article.className='item thumb '+span;
-article.innerHTML='<h2>'+name+'</h2><a href="'+full+'" class="image"><img src="'+thumb+'" alt="'+name+'" loading="lazy"></a>';
-container.appendChild(article);
-});
-$('#main').poptrox({
-onPopupOpen:function(){$('body').addClass('is-poptrox-visible');},
-onPopupClose:function(){$('body').removeClass('is-poptrox-visible');},
-overlayColor:'#1a1f2c',overlayOpacity:0.85,popupCloserText:'',popupLoaderText:'',
-selector:'.item.thumb a.image',caption:function($a){return $a.prev('h2').html();},
-usePopupDefaultStyling:false,usePopupCloser:false,usePopupCaption:true,usePopupNav:true,windowMargin:50
-});
-}
-async function uploadFiles(files){
-const progress=document.getElementById('upload-progress');
-const bar=document.getElementById('progress-bar');
-const status=document.getElementById('upload-status');
-progress.style.display='block';
-let uploaded=0;
-for(const file of files){
-status.textContent='جاري رفع '+file.name+'...';
-const formData=new FormData();
-formData.append('file',file);
-formData.append('upload_preset',UPLOAD_PRESET);
-formData.append('folder',FOLDER);
-try{
-const res=await fetch('https://api.cloudinary.com/v1_1/'+CLOUD_NAME+'/image/upload',{method:'POST',body:formData});
-if(!res.ok)throw new Error('error');
-uploaded++;
-bar.style.width=(uploaded/files.length*100)+'%';
-status.textContent='تم رفع '+uploaded+' من '+files.length;
-}catch(err){status.textContent='خطأ في الرفع';}
-}
-if(uploaded===files.length){
-status.textContent='✅ تم الرفع! جاري التحديث...';
-setTimeout(()=>{closeModal();progress.style.display='none';bar.style.width='0%';loadGallery();},1500);
-}}
-function openModal(){document.getElementById('upload-modal').classList.add('active');}
-function closeModal(){document.getElementById('upload-modal').classList.remove('active');document.getElementById('upload-status').textContent='';document.getElementById('progress-bar').style.width='0%';document.getElementById('upload-progress').style.display='none';}
-document.getElementById('upload-btn').addEventListener('click',openModal);
-document.getElementById('upload-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
-document.getElementById('file-input').addEventListener('change',function(){if(this.files.length>0)uploadFiles(Array.from(this.files));});
-window.addEventListener('load',loadGallery);
-</script>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header id="header">
+        <nav>
+            <a href="#home" class="logo">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 20C16.4 20 20 16.4 20 12C20 7.6 16.4 4 12 4C7.6 4 4 7.6 4 12C4 16.4 7.6 20 12 20M12 2C18.5 2 22 6.5 22 12C22 17.5 17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2Z"/>
+                </svg>
+                ذاكرتنا
+            </a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home">الرئيسية</a></li>
+                <li><a href="#images">الصور</a></li>
+                <li><a href="#music">الموسيقى</a></li>
+                <li><a href="#videos">الفيديو</a></li>
+                <li><a href="#files">الملفات</a></li>
+            </ul>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-bg"></div>
+        <div class="hero-shapes">
+            <div class="floating-accent accent-1"></div>
+            <div class="floating-accent accent-2"></div>
+            <div class="floating-accent accent-3"></div>
+        </div>
+        <div class="hero-content reveal">
+            <h1 class="hero-title">ذاكرتنا</h1>
+            <p class="hero-subtitle">معرض عائلي لحفظ الذكريات الغالية</p>
+            <a href="#images" class="cta-button">استكشف الذكريات</a>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section reveal">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="imageCount">0</div>
+                <div class="stat-label">صور</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="musicCount">0</div>
+                <div class="stat-label">مسارات موسيقية</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="videoCount">0</div>
+                <div class="stat-label">فيديوهات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="fileCount">0</div>
+                <div class="stat-label">ملفات</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Images Section -->
+    <section class="media-section" id="images">
+        <div class="section-header reveal">
+            <h2 class="section-title">الصور</h2>
+            <p class="section-subtitle">معرض الصور العائلية</p>
+        </div>
+        
+        <div class="media-controls">
+            <input type="text" id="imageSearch" class="search-input" placeholder="ابحث عن صورة...">
+            <button class="upload-btn" onclick="document.getElementById('imageUpload').click()">
+                <span>📤 رفع صورة</span>
+            </button>
+            <input type="file" id="imageUpload" accept="image/*" style="display:none;" multiple>
+        </div>
+
+        <div class="images-grid" id="imagesGrid">
+            <div class="empty-state">
+                <p>لا توجد صور حالياً</p>
+            </div>
+        </div>
+
+        <!-- Image Lightbox -->
+        <div class="lightbox" id="imageLightbox">
+            <span class="close">&times;</span>
+            <img class="lightbox-content" id="lightboxImage">
+        </div>
+    </section>
+
+    <!-- Music Section -->
+    <section class="media-section" id="music">
+        <div class="section-header reveal">
+            <h2 class="section-title">الموسيقى</h2>
+            <p class="section-subtitle">مسارات موسيقية مفضلة</p>
+        </div>
+
+        <div class="media-controls">
+            <input type="text" id="musicSearch" class="search-input" placeholder="ابحث عن مسار...">
+            <button class="upload-btn" onclick="document.getElementById('musicUpload').click()">
+                <span>📤 رفع موسيقى</span>
+            </button>
+            <input type="file" id="musicUpload" accept="audio/*" style="display:none;" multiple>
+        </div>
+
+        <div class="music-list" id="musicList">
+            <div class="empty-state">
+                <p>لا توجد مسارات موسيقية حالياً</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Videos Section -->
+    <section class="media-section" id="videos">
+        <div class="section-header reveal">
+            <h2 class="section-title">الفيديو</h2>
+            <p class="section-subtitle">مقاطع فيديو عائلية</p>
+        </div>
+
+        <div class="media-controls">
+            <input type="text" id="videoSearch" class="search-input" placeholder="ابحث عن فيديو...">
+            <button class="upload-btn" onclick="document.getElementById('videoUpload').click()">
+                <span>📤 رفع فيديو</span>
+            </button>
+            <input type="file" id="videoUpload" accept="video/*" style="display:none;" multiple>
+        </div>
+
+        <div class="videos-grid" id="videosGrid">
+            <div class="empty-state">
+                <p>لا توجد فيديوهات حالياً</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Files Section -->
+    <section class="media-section" id="files">
+        <div class="section-header reveal">
+            <h2 class="section-title">الملفات</h2>
+            <p class="section-subtitle">ملفات وثائق مهمة</p>
+        </div>
+
+        <div class="media-controls">
+            <input type="text" id="fileSearch" class="search-input" placeholder="ابحث عن ملف...">
+            <button class="upload-btn" onclick="document.getElementById('fileUpload').click()">
+                <span>📤 رفع ملف</span>
+            </button>
+            <input type="file" id="fileUpload" style="display:none;" multiple>
+        </div>
+
+        <div class="files-list" id="filesList">
+            <div class="empty-state">
+                <p>لا توجد ملفات حالياً</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Progress Modal -->
+    <div class="upload-modal" id="uploadModal">
+        <div class="modal-content">
+            <h3>جاري الرفع...</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="uploadStatus">0%</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 ذاكرتنا - معرض عائلي | Our Memory - Family Gallery</p>
+    </footer>
+
+    <script src="templatemo-amber-script.js"></script>
+    <script src="custom-media.js"></script>
 </body>
 </html>
