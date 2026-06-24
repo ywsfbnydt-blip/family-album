@@ -392,22 +392,23 @@ function updateCounts(){
   document.getElementById('file-total').textContent=fc+' ملف';
   document.getElementById('video-total').textContent=vc+' مقطع';
 }
-async function loadExisting(){
-  try{
-    const tags=['family_photo','family_music','family_file','family_video'];
-    for(const tag of tags){
-      const r=await fetch(`https://res.cloudinary.com/${CLOUD}/image/list/${tag}.json`);
-      if(!r.ok)continue;const data=await r.json();if(!data.resources)continue;
-      data.resources.forEach(item=>{
-        const url=`https://res.cloudinary.com/${CLOUD}/image/upload/${item.public_id}`;
-        if(tag==='family_photo')addPhotoToGrid(url,item.public_id);
-        else if(tag==='family_music')addMusicToList(url,item.public_id+'.mp3',item.public_id);
-        else if(tag==='family_file')addFileToList(url,item.public_id,0,item.public_id);
-        else if(tag==='family_video')addVideoToGrid(url,item.public_id+'.mp4',item.public_id);
-      });
-    }
-    updateCounts();
-  }catch(e){}
+function loadExisting(){
+  const saved = localStorage.getItem('family_media');
+  if(!saved)return;
+  const media = JSON.parse(saved);
+  media.forEach(item=>{
+    if(item.type==='photo')addPhotoToGrid(item.url,item.id);
+    else if(item.type==='music')addMusicToList(item.url,item.name,item.id);
+    else if(item.type==='file')addFileToList(item.url,item.name,item.size,item.id);
+    else if(item.type==='video')addVideoToGrid(item.url,item.name,item.id);
+  });
+  updateCounts();
+}
+function saveMedia(type,url,name,size,id){
+  const saved = localStorage.getItem('family_media');
+  const media = saved ? JSON.parse(saved) : [];
+  media.push({type,url,name:name||'',size:size||0,id});
+  localStorage.setItem('family_media', JSON.stringify(media));
 }
 window.onload=loadExisting;
 </script>
